@@ -1,37 +1,45 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import { nanoid } from "nanoid";
 import s from './ContactForm.module.css'
 
-export class ContactForm extends Component {
-    state = {
-        name: '',
-        number: ''
-    }
+export function ContactForm({ onSubmit }) {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+   
+    const nameInputId = nanoid();
+    const numberInputId = nanoid();
 
-    nameInputId = nanoid();
-    numberInputId = nanoid();
-
-    handleChange = e => {
+    const handleChange = e => {
         const { name, value } = e.currentTarget;
-        this.setState({ [name]: value });
-    }
 
-    handleSubmit = e => {
+        switch (name) {
+          case 'name':
+            setName(value);
+            break;
+    
+          case 'number':
+            setNumber(value);
+            break;
+    
+          default:
+            break;
+        }
+    };
+
+    const handleSubmit = e => {
         e.preventDefault();
-        this.props.onSubmit(this.state);
-        this.reset();
-    }
+        onSubmit({ name: name, number: number });
+        reset();
+    };
 
-    reset = () => {
-        this.setState({name: '', number: ''})
-    }
-  
-    render() {
-      const { name, number } = this.state;
+    const reset = () => {
+        setName('');
+        setNumber('');
+    };
 
       return (
-        <form onSubmit={this.handleSubmit} className={s.form}>
-            <label htmlFor={this.nameInputId} className={s.label}>Name</label>
+        <form onSubmit={handleSubmit} className={s.form}>
+            <label htmlFor={nameInputId} className={s.label}>Name</label>
             <input
                 type="text"
                 name="name"
@@ -39,12 +47,12 @@ export class ContactForm extends Component {
                 title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                 required
                 value={name}
-                id = {this.nameInputId}
-                onChange={this.handleChange}
+                id = {nameInputId}
+                onChange={handleChange}
                 className={s.input}
             />
 
-            <label htmlFor={this.numberInputId} className={s.label}>Number</label>
+            <label htmlFor={numberInputId} className={s.label}>Number</label>
             <input
                 type="tel"
                 name="number"
@@ -52,13 +60,12 @@ export class ContactForm extends Component {
                 title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                 required
                 value={number}
-                id = {this.numberInputId}
-                onChange={this.handleChange}
+                id = {numberInputId}
+                onChange={handleChange}
                 className={s.input}
             />
             <button type="submit" className={s.button}>Add contact</button>
        </form>
       );
-    }
   }
 
